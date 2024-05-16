@@ -1,25 +1,29 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const TokenBlacklist = require('../models/TokenBlackList');
+const secretKey = process.env.SECRET_KEY;
+
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ error: 'Please authenticate' });
+  if (!req.headers.authorization || req.headers.authorization.split(" ").length < 2) {
+      return res.status(401).json({ message: 'Öncelikle Giriş yapınız! (Token bulunamadı)' });
   }
 
+  const token = req.headers.authorization.split(" ")[1];
+  
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ _id: decoded._id });
+      const decoded = jwt.verify(token, secretKey);
+      req.userData = decoded;
 
-    if (!user) {
-      throw new Error();
-    }
+      const tokenInBlacklist = await TokenBlacklist.findOne({ token });
+      if (tokenInBlacklist) {
+          return res.status(401).json({ message: 'Lütfen öncelikle Giriş yapınız. (Token Kullanılmıyor veya eksik)' });
+      }
 
-    req.user = user;
-    next();
+      next();
   } catch (error) {
-    res.status(401).json({ error: 'Please authenticate' });
+      return res.status(401).json({
+          message: 'Öncelikle Giriş Yapınız!'
+      });
   }
 };
 
