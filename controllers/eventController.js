@@ -69,7 +69,7 @@ exports.updateEvent = async (req, res) => {
 
     // Etkinliği oluşturan kullanıcı ile giriş yapan kullanıcıyı karşılaştırıyoruz
     if (event.createdBy.toString() !== userId) {
-      return res.status(403).json({ error: "Event'i sadece Event sahibi değiştirebilir." });
+      return res.status(403).json({ error: "Event'i sadece Event Sahibi değiştirebilir." });
     }
 
     // Etkinliği güncelliyoruz
@@ -89,13 +89,16 @@ exports.updateEvent = async (req, res) => {
 // Etkinlik silme
 exports.deleteEvent = async (req, res) => {
   try {
+    const userId = req.user.userId;    
     const { eventId } = req.params;
-
-    const event = await Event.findByIdAndDelete(eventId);
-
+    const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
     }
+    if (event.createdBy.toString() !== userId) {
+      return res.status(403).json({ error: "Event'i sadece Event Sahibi Silebilir." });
+    }
+    await Event.findByIdAndDelete(eventId);    
 
     res.status(200).json({ message: "Event deleted" });
   } catch (error) {

@@ -34,28 +34,33 @@ exports.userCreate = async (req, res) => {
         res.status(500).json({ error: error.message });
       }
     }
-  };
-  
+};  
 
 exports.deleteUser = async (req, res) => {
     await User.findByIdAndDelete(req.params.id);
-    res.redirect('/api/users');
+    res.json('Kullanıcı Başarıyla silindi!');
 };
 
 exports.updateUser = async (req, res) => {
-    const upUser = await User.findOne({_id: req.params.id});
-    if (!upUser) {
-        return res.status(404).send({error: "Kullanıcı Bulunamadı."});
+    try {
+        const upUser = await User.findOne({ _id: req.params.id });
+        if (!upUser) {
+            return res.status(404).send({ error: "Kullanıcı Bulunamadı." });
+        }
+        // Gelen verileri güncelle
+        upUser.username = req.body.username;
+        upUser.mail = req.body.mail;
+        upUser.password = req.body.password;
+        await upUser.save();
+        res.json({
+            id: upUser._id,
+            username: upUser.username,
+            mail: upUser.mail
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Bir hata oluştu." });
     }
-    upUser.name= req.body.name;
-    upUser.mail= req.body.mail;
-    upUser.password= req.body.password;
-    upUser.save();
-    res.json({
-        id: upUser._id,
-        name: upUser.name,
-        mail: upUser.mail
-    })
 };
 
 exports.loginUser = async (req, res) => {
@@ -91,7 +96,6 @@ exports.loginUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 exports.logoutUser = async (req, res) => {
     try {
