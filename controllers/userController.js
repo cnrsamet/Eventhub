@@ -3,6 +3,7 @@ const TokenBlacklist = require('../models/TokenBlackList');
 
 
 
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const secretKey = process.env.SECRET_KEY;
 
@@ -14,9 +15,27 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.userCreate = async (req, res) => {
-    const user = await User.create(req.body);
-    res.json(user);
-};
+    try {
+      const { username, mail, password } = req.body;
+  
+      // Gelen verilerin doğru olup olmadığını kontrol et
+      if (!username || !mail || !password) {
+        return res.status(400).json({ error: 'Lütfen tüm alanları doldurun.' });
+      }
+  
+      const user = new User({ username, mail, password });
+      await user.save();
+  
+      res.status(201).json(user);
+    } catch (error) {
+      if (error.code === 11000) {
+        res.status(400).json({ error: 'Bu e-posta zaten kullanılıyor.' });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  };
+  
 
 exports.deleteUser = async (req, res) => {
     await User.findByIdAndDelete(req.params.id);

@@ -15,7 +15,7 @@ router.route('/:eventId').put(authMiddleware, eventController.updateEvent);
 router.route('/:eventId').delete(authMiddleware, eventController.deleteEvent);
 
 
-
+/*
 //Event RSVP İşlemleri
 router.route('/:eventId/rsvp').post(authMiddleware, rsvpController.createRSVP);
 router.route('/:eventId/rsvps').get(rsvpController.getEventRSVPs);
@@ -27,6 +27,6 @@ router.route('/:eventId/comments').post(authMiddleware, commentController.create
 router.route('/:eventId/comments').get(commentController.getEventComments);
 router.route('/:eventId/comments/:commentId').get(authMiddleware, commentController.updateComment);
 router.route('/:eventId/comments/:commentId').get(authMiddleware, commentController.deleteComment);
-
+*/
 
 module.exports = router;

@@ -12,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
   
   try {
       const decoded = jwt.verify(token, secretKey);
-      req.userData = decoded;
+      req.user = decoded;
 
       const tokenInBlacklist = await TokenBlacklist.findOne({ token });
       if (tokenInBlacklist) {
