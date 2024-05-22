@@ -13,7 +13,7 @@ const rsvpSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Attending', 'Maybe', 'Not Attending'],
+    enum: ['Katılıyor', 'Belki', 'Katılmıyor'],
     required: true
   },
   createdAt: {

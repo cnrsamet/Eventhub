@@ -14,14 +14,14 @@ router.route('/:eventId').get(eventController.getEventById);
 router.route('/:eventId').put(authMiddleware, eventController.updateEvent);
 router.route('/:eventId').delete(authMiddleware, eventController.deleteEvent);
 
+//------------------------------------------------------------------------------------------
 
-/*
 //Event RSVP İşlemleri
 router.route('/:eventId/rsvp').post(authMiddleware, rsvpController.createRSVP);
 router.route('/:eventId/rsvps').get(rsvpController.getEventRSVPs);
-router.route('/:eventId/rsvp/:rsvpId').put(authMiddleware, rsvpController.updateRSVP);
-router.route('/:eventId/rsvp/:rsvpId').delete(authMiddleware, rsvpController.deleteRSVP);
-
+//router.route('/:eventId/rsvp/:rsvpId').put(authMiddleware, rsvpController.updateRSVP);
+//router.route('/:eventId/rsvp/:rsvpId').delete(authMiddleware, rsvpController.deleteRSVP);
+/*
 //comments
 router.route('/:eventId/comments').post(authMiddleware, commentController.createComment);
 router.route('/:eventId/comments').get(commentController.getEventComments);
