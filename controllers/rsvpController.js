@@ -62,3 +62,50 @@ exports.getEventRSVPs = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.updateRSVP = async (req, res) => {
+  try {
+    const { rsvpId } = req.params;
+    const { status } = req.body;
+    const userId = req.user.userId; // Giriş yapan kullanıcının kimliği
+
+    // `status` alanının geçerli olup olmadığını kontrol ediyoruz
+    if (!status || !['Katılıyor', 'Belki', 'Katılmıyor'].includes(status)) {
+      return res.status(400).json({ error: "Geçersiz RSVP durumu." });
+    }
+
+    const rsvp = await RSVP.findOne({ _id: rsvpId, user: userId });
+
+    if (!rsvp) {
+      return res.status(404).json({ error: "RSVP bulunamadı veya bu kullanıcıya ait değil!" });
+    }
+
+    rsvp.status = status;
+
+    await rsvp.save();
+
+    res.status(200).json(rsvp);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// RSVP silme
+exports.deleteRSVP = async (req, res) => {
+  try {
+    const { rsvpId } = req.params;
+    const userId = req.user.userId; // Giriş yapan kullanıcının kimliği
+
+    const rsvp = await RSVP.findOne({ _id: rsvpId, user: userId });
+
+    if (!rsvp) {
+      return res.status(404).json({ error: "RSVP bulunamadı veya bu kullanıcıya ait değil!" });
+    }
+
+    await RSVP.deleteOne({ _id: rsvpId });
+
+    res.status(200).json({ message: "RSVP başarıyla silindi" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
