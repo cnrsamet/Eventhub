@@ -21,12 +21,12 @@ router.route('/:eventId/rsvp').post(authMiddleware, rsvpController.createRSVP);
 router.route('/:eventId/rsvps').get(rsvpController.getEventRSVPs);
 router.route('/:eventId/rsvp/:rsvpId').put(authMiddleware, rsvpController.updateRSVP);
 router.route('/:eventId/rsvp/:rsvpId').delete(authMiddleware, rsvpController.deleteRSVP);
-/*
+
 //comments
 router.route('/:eventId/comments').post(authMiddleware, commentController.createComment);
 router.route('/:eventId/comments').get(commentController.getEventComments);
-router.route('/:eventId/comments/:commentId').get(authMiddleware, commentController.updateComment);
-router.route('/:eventId/comments/:commentId').get(authMiddleware, commentController.deleteComment);
-*/
+router.route('/:eventId/comments/:commentId').put(authMiddleware, commentController.updateComment);
+router.route('/:eventId/comments/:commentId').delete(authMiddleware, commentController.deleteComment);
+
 
 module.exports = router;
